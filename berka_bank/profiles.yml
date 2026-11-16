@@ -1,0 +1,7 @@
+berka_bank:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: berka.duckdb
+      threads: 4

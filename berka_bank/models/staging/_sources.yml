@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Berka (PKDD'99) Czech bank dataset, loaded from the CTU Relational Repository.
+    schema: raw
+    config:
+      loaded_at_field: _loaded_at
+      freshness:
+        warn_after: {count: 7, period: day}
+        error_after: {count: 30, period: day}
+    tables:
+      - name: account
+      - name: client
+      - name: disp
+      - name: loan
+      - name: district
+      - name: card
+      - name: orders
+      - name: trans

@@ -1,0 +1,10 @@
+.venv/
+data/raw/
+*.duckdb
+*.duckdb.wal
+__pycache__/
+target/
+logs/
+dbt_packages/
+berka_bank/.user.yml
+berka_bank/scripts/diag*.py
