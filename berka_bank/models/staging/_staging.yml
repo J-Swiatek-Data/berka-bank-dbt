@@ -1,0 +1,111 @@
+version: 2
+
+models:
+  - name: stg_berka__account
+    columns:
+      - name: account_id
+        data_tests: [unique, not_null]
+      - name: district_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_berka__district')
+                field: district_id
+      - name: statement_frequency
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [monthly, weekly, after_transaction]
+
+  - name: stg_berka__client
+    columns:
+      - name: client_id
+        data_tests: [unique, not_null]
+      - name: district_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_berka__district')
+                field: district_id
+
+  - name: stg_berka__disp
+    columns:
+      - name: disp_id
+        data_tests: [unique, not_null]
+      - name: client_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_berka__client')
+                field: client_id
+      - name: account_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_berka__account')
+                field: account_id
+      - name: disposition_type
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [owner, disponent]
+
+  - name: stg_berka__district
+    columns:
+      - name: district_id
+        data_tests: [unique, not_null]
+
+  - name: stg_berka__loan
+    columns:
+      - name: loan_id
+        data_tests: [unique, not_null]
+      - name: account_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_berka__account')
+                field: account_id
+      - name: loan_status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [finished_paid, finished_unpaid, running_ok, running_in_debt]
+
+  - name: stg_berka__card
+    columns:
+      - name: card_id
+        data_tests: [unique, not_null]
+      - name: disp_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_berka__disp')
+                field: disp_id
+
+  - name: stg_berka__orders
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+      - name: account_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_berka__account')
+                field: account_id
+
+  - name: stg_berka__trans
+    columns:
+      - name: trans_id
+        data_tests: [unique, not_null]
+      - name: account_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_berka__account')
+                field: account_id
+      - name: transaction_type
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [credit, debit, cash_withdrawal]

@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: dim_districts
+    columns:
+      - name: district_id
+        data_tests: [unique, not_null]
+
+  - name: dim_clients
+    columns:
+      - name: client_id
+        data_tests: [unique, not_null]
+
+  - name: dim_accounts
+    columns:
+      - name: account_id
+        data_tests: [unique, not_null]
+      - name: district_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_districts')
+                field: district_id
+      - name: owner_client_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_clients')
+                field: client_id
+
+  - name: fct_loans
+    columns:
+      - name: loan_id
+        data_tests: [unique, not_null]
+      - name: account_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_accounts')
+                field: account_id
+
+  - name: fct_transactions
+    columns:
+      - name: trans_id
+        data_tests: [unique, not_null]
+      - name: account_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_accounts')
+                field: account_id
+      - name: transaction_type
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [credit, debit, cash_withdrawal]
