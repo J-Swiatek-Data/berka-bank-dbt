@@ -2,26 +2,34 @@ version: 2
 
 models:
   - name: dim_districts
+    description: One row for each Czech district, including demographic and economic indicators from the source data.
     columns:
       - name: district_id
+        description: Primary key.
         data_tests: [unique, not_null]
 
   - name: dim_clients
+    description: One row for each bank client, including gender, birth date, and home district.
     columns:
       - name: client_id
+        description: Primary key.
         data_tests: [unique, not_null]
 
   - name: dim_accounts
+    description: One row for each account, including its statement frequency, opening date, district, and owning client.
     columns:
       - name: account_id
+        description: Primary key.
         data_tests: [unique, not_null]
       - name: district_id
+        description: Foreign key to dim_districts.
         data_tests:
           - relationships:
               arguments:
                 to: ref('dim_districts')
                 field: district_id
       - name: owner_client_id
+        description: Foreign key to dim_clients. Each account has only one owner.
         data_tests:
           - not_null
           - relationships:
@@ -30,10 +38,13 @@ models:
                 field: client_id
 
   - name: fct_loans
+    description: One row for each loan. is_problem_loan is a project definition (it's not a source field). It marks finished-unpaid and running-in-debt loans.
     columns:
       - name: loan_id
+        description: Primary key.
         data_tests: [unique, not_null]
       - name: account_id
+        description: Foreign key to dim_accounts.
         data_tests:
           - relationships:
               arguments:
@@ -41,16 +52,20 @@ models:
                 field: account_id
 
   - name: fct_transactions
+    description: One row for each transaction. This is built incrementally, using the load timestamp. signed_amount is positive for credits and negative for debits and cash withdrawals.
     columns:
       - name: trans_id
+        description: Primary key.
         data_tests: [unique, not_null]
       - name: account_id
+        description: Foreign key to dim_accounts.
         data_tests:
           - relationships:
               arguments:
                 to: ref('dim_accounts')
                 field: account_id
       - name: transaction_type
+        description: Type of transaction. Allowed values are credit, debit and cash_withdrawal.
         data_tests:
           - accepted_values:
               arguments:
