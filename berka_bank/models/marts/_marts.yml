@@ -37,10 +37,45 @@ models:
                 to: ref('dim_clients')
                 field: client_id
 
+  - name: dim_cards
+    description: One row for each card, including its type, issue date, and the client and account it belongs to.
+    columns:
+      - name: card_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: client_id
+        description: Foreign key to dim_clients.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_clients')
+                field: client_id
+      - name: account_id
+        description: Foreign key to dim_accounts.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_accounts')
+                field: account_id
+
   - name: fct_loans
     description: One row for each loan. is_problem_loan is a project definition (it's not a source field). It marks finished-unpaid and running-in-debt loans.
     columns:
       - name: loan_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: account_id
+        description: Foreign key to dim_accounts.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_accounts')
+                field: account_id
+
+  - name: fct_orders
+    description: One row for each standing order (recurring payment instruction), including amount and payment type.
+    columns:
+      - name: order_id
         description: Primary key.
         data_tests: [unique, not_null]
       - name: account_id
